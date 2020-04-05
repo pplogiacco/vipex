@@ -1,0 +1,42 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/application-exit.png</file>
+        <file>images/clear.png</file>
+        <file>images/connect.png</file>
+        <file>images/disabled.png</file>
+        <file>images/disconnect.png</file>
+        <file>images/enabled.png</file>
+        <file>images/handshake.png</file>
+        <file>images/icona_meno.png</file>
+        <file>images/icona_piu.png</file>
+        <file>images/loconet.png</file>
+        <file>images/settings.png</file>
+        <file>images/add.png</file>
+        <file>images/arrows.png</file>
+        <file>images/attyellow.png</file>
+        <file>images/cbreak.png</file>
+        <file>images/check_green.png</file>
+        <file>images/check_red.png</file>
+        <file>images/down-red.png</file>
+        <file>images/down.png</file>
+        <file>images/f_new.png</file>
+        <file>images/f_open.png</file>
+        <file>images/f_save.png</file>
+        <file>images/f_save_as.png</file>
+        <file>images/flash_yelor.png</file>
+        <file>images/ic_.png</file>
+        <file>images/ic_black.png</file>
+        <file>images/ic_bkorange.png</file>
+        <file>images/ic_flash.png</file>
+        <file>images/ic_green.png</file>
+        <file>images/ic_h.png</file>
+        <file>images/ic_plug.png</file>
+        <file>images/ic_updwn.png</file>
+        <file>images/lamp.png</file>
+        <file>images/f_open2.png</file>
+        <file>images/runner.png</file>
+        <file>images/serial5.png</file>
+        <file>images/up.png</file>
+        <file>images/addmodule.png</file>
+    </qresource>
+</RCC>

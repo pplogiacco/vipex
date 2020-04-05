@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE vrms>
+<vrms version="1.0">
+
+    <device idd="0" ver="2">
+	<alias>Nanoboard v2</alias>
+        <module idx="0" mtype="loc">
+	<alias>Local pins</alias>
+	    <port idx="0">
+		<alias>Nanoboard_GPIO0</alias>
+	    </port>
+
+	    <port idx="1" alias="Nanoboard_GPIO1"></port>
+	    <port idx="2" alias="Nanoboard_GPIO2"></port>	
+        </module>
+	<module idx="1" mtype="sem" alias="Sem16 IO Expander" folded="no">
+	    <port idx="0" alias="Sem16_P0"></port>
+	    <port idx="1" alias="Sem16_P1"></port>
+	    <port idx="2" alias="Sem16_P16"></port>	
+        </module>
+	<module idx="2" mtype="lcn" alias="Sem16 IO Expander" folded="no">
+	    <port idx="0" alias="Sem16_P0"></port>
+	    <port idx="1" alias="Sem16_P1"></port>
+	    <port idx="2" alias="Sem16_P16"></port>	
+        </module>
+
+    </device>
+
+
+</vrms>
