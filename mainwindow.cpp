@@ -398,7 +398,7 @@ void MainWindow::on_actionAddModule_triggered(bool checked)
 void MainWindow::on_viewModules_doubleClicked(const QModelIndex &index)
 {
 
-    Dialog_EditPort dialog(dm_modules, m_ui->viewModules->currentIndex() );
-    dialog.exec();
+    // Dialog_EditPort dialog(dm_modules, m_ui->viewModules->currentIndex() );
+    // dialog.exec();
 
 }
