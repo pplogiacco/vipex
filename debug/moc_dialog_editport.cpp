@@ -21,34 +21,34 @@
 QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
-struct qt_meta_stringdata_DialogEditPort_t {
+struct qt_meta_stringdata_Dialog_EditPort_t {
     QByteArrayData data[8];
-    char stringdata0[108];
+    char stringdata0[109];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_DialogEditPort_t, stringdata0) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_Dialog_EditPort_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
-static const qt_meta_stringdata_DialogEditPort_t qt_meta_stringdata_DialogEditPort = {
+static const qt_meta_stringdata_Dialog_EditPort_t qt_meta_stringdata_Dialog_EditPort = {
     {
-QT_MOC_LITERAL(0, 0, 14), // "DialogEditPort"
-QT_MOC_LITERAL(1, 15, 12), // "myplcChanged"
-QT_MOC_LITERAL(2, 28, 0), // ""
-QT_MOC_LITERAL(3, 29, 11), // "QModelIndex"
-QT_MOC_LITERAL(4, 41, 20), // "on_buttonBox_clicked"
-QT_MOC_LITERAL(5, 62, 16), // "QAbstractButton*"
-QT_MOC_LITERAL(6, 79, 6), // "button"
-QT_MOC_LITERAL(7, 86, 21) // "on_buttonBox_accepted"
+QT_MOC_LITERAL(0, 0, 15), // "Dialog_EditPort"
+QT_MOC_LITERAL(1, 16, 12), // "myplcChanged"
+QT_MOC_LITERAL(2, 29, 0), // ""
+QT_MOC_LITERAL(3, 30, 11), // "QModelIndex"
+QT_MOC_LITERAL(4, 42, 20), // "on_buttonBox_clicked"
+QT_MOC_LITERAL(5, 63, 16), // "QAbstractButton*"
+QT_MOC_LITERAL(6, 80, 6), // "button"
+QT_MOC_LITERAL(7, 87, 21) // "on_buttonBox_accepted"
 
     },
-    "DialogEditPort\0myplcChanged\0\0QModelIndex\0"
+    "Dialog_EditPort\0myplcChanged\0\0QModelIndex\0"
     "on_buttonBox_clicked\0QAbstractButton*\0"
     "button\0on_buttonBox_accepted"
 };
 #undef QT_MOC_LITERAL
 
-static const uint qt_meta_data_DialogEditPort[] = {
+static const uint qt_meta_data_Dialog_EditPort[] = {
 
  // content:
        8,       // revision
@@ -78,10 +78,10 @@ static const uint qt_meta_data_DialogEditPort[] = {
        0        // eod
 };
 
-void DialogEditPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void Dialog_EditPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        auto *_t = static_cast<DialogEditPort *>(_o);
+        auto *_t = static_cast<Dialog_EditPort *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->myplcChanged((*reinterpret_cast< const QModelIndex(*)>(_a[1]))); break;
@@ -103,8 +103,8 @@ void DialogEditPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            using _t = void (DialogEditPort::*)(const QModelIndex & );
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&DialogEditPort::myplcChanged)) {
+            using _t = void (Dialog_EditPort::*)(const QModelIndex & );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&Dialog_EditPort::myplcChanged)) {
                 *result = 0;
                 return;
             }
@@ -112,30 +112,30 @@ void DialogEditPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
     }
 }
 
-QT_INIT_METAOBJECT const QMetaObject DialogEditPort::staticMetaObject = { {
+QT_INIT_METAOBJECT const QMetaObject Dialog_EditPort::staticMetaObject = { {
     QMetaObject::SuperData::link<QDialog::staticMetaObject>(),
-    qt_meta_stringdata_DialogEditPort.data,
-    qt_meta_data_DialogEditPort,
+    qt_meta_stringdata_Dialog_EditPort.data,
+    qt_meta_data_Dialog_EditPort,
     qt_static_metacall,
     nullptr,
     nullptr
 } };
 
 
-const QMetaObject *DialogEditPort::metaObject() const
+const QMetaObject *Dialog_EditPort::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *DialogEditPort::qt_metacast(const char *_clname)
+void *Dialog_EditPort::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
-    if (!strcmp(_clname, qt_meta_stringdata_DialogEditPort.stringdata0))
+    if (!strcmp(_clname, qt_meta_stringdata_Dialog_EditPort.stringdata0))
         return static_cast<void*>(this);
     return QDialog::qt_metacast(_clname);
 }
 
-int DialogEditPort::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int Dialog_EditPort::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = QDialog::qt_metacall(_c, _id, _a);
     if (_id < 0)
@@ -153,7 +153,7 @@ int DialogEditPort::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void DialogEditPort::myplcChanged(const QModelIndex & _t1)
+void Dialog_EditPort::myplcChanged(const QModelIndex & _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);

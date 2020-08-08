@@ -4,19 +4,19 @@
 #include <QDialog>
 
 namespace Ui {
-class DialogEditRule;
+class Dialog_EditRule;
 }
 
-class DialogEditRule : public QDialog
+class Dialog_EditRule : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit DialogEditRule(QWidget *parent = nullptr);
-    ~DialogEditRule();
+    explicit Dialog_EditRule(QWidget *parent = nullptr);
+    ~Dialog_EditRule();
 
 private:
-    Ui::DialogEditRule *ui;
+    Ui::Dialog_EditRule *ui;
 };
 
 #endif // DIALOGEDITRULE_H

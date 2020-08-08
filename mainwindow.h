@@ -51,10 +51,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-
 #include <QMainWindow>
-
-#include "myplcmodel.h"
+#include "myplcmodels.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -62,11 +60,10 @@ QT_BEGIN_NAMESPACE
 class QLabel;
 
 class MyPlcItem;
-class MyPlcModel;
+class dmModules;
 
 namespace Ui {
     class MainWindow;
-
 }
 
 QT_END_NAMESPACE
@@ -77,13 +74,8 @@ class MainWindow : public QMainWindow //, private Ui::MainWindow
     Q_OBJECT
 
 public:
-    //MainWindow();
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
-signals:
-  //  void getData(const QByteArray &data);
-
 
 public slots:
 
@@ -91,36 +83,41 @@ public slots:
     void fileOpen();
     void fileSave();
     void fileSaveAs();
+
+    // Generic
     void about();
-    void addModule();
     void myplcClean();
 
-    // Serial Interface
-    void serialLink();
-    void refreshTree();
-    // void refreshItem(const QModelIndex &index);
+    // Editing
+    void refresh();
     void editItem();
-
-    void onCustomContextMenu(const QPoint &);
+    void viewModulesContextMenu(const QPoint &);
 
 private slots:
 
-    void on_myplcTree_itemDoubleClicked(QTreeWidgetItem *item, int column);
 
-    void on_myplcTree_doubleClicked(const QModelIndex &index);
+    void on_actionRetrieve_triggered(bool checked);
+    void on_actionSerialConnect_triggered(bool checked);
 
-private:
     void showStatusMessage(const QString &message);
-    void initActionsConnections();
+
+    void cbxSerialPort_refresh();   // Called on cbxSerial got focus
+    void deviceInfos_refresh();
     void save();
 
-    Ui::MainWindow *m_ui = nullptr;
+    void on_actionAddModule_triggered(bool checked);
 
+    void on_viewModules_doubleClicked(const QModelIndex &index);
+
+private:
+    Ui::MainWindow *m_ui = nullptr;
     QLabel *m_status = nullptr;
 
-    QString  m_filename = "";                     // WORKING FILE
+    MyPlcDevice *l_myplc = nullptr;    // WORKING DATA
+    dmModules *dm_modules = nullptr;   // Datamodel
 
-    MyPlcModel *m_myplc = nullptr;                // WORKING DATA
+    QComboBox cbxSerialPort;           // Serial com selector
+    QString l_filename;
 
 
 };

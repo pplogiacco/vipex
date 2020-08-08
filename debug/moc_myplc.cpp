@@ -21,75 +21,163 @@
 QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
-struct qt_meta_stringdata_MyPlc_t {
-    QByteArrayData data[1];
-    char stringdata0[6];
+struct qt_meta_stringdata_MyPlcDevice_t {
+    QByteArrayData data[14];
+    char stringdata0[121];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_MyPlc_t, stringdata0) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_MyPlcDevice_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
-static const qt_meta_stringdata_MyPlc_t qt_meta_stringdata_MyPlc = {
+static const qt_meta_stringdata_MyPlcDevice_t qt_meta_stringdata_MyPlcDevice = {
     {
-QT_MOC_LITERAL(0, 0, 5) // "MyPlc"
+QT_MOC_LITERAL(0, 0, 11), // "MyPlcDevice"
+QT_MOC_LITERAL(1, 12, 13), // "deviceChanged"
+QT_MOC_LITERAL(2, 26, 0), // ""
+QT_MOC_LITERAL(3, 27, 12), // "syncIsDevice"
+QT_MOC_LITERAL(4, 40, 9), // "vs_info_t"
+QT_MOC_LITERAL(5, 50, 6), // "rawdev"
+QT_MOC_LITERAL(6, 57, 12), // "syncComplete"
+QT_MOC_LITERAL(7, 70, 7), // "l_rwcmd"
+QT_MOC_LITERAL(8, 78, 10), // "updateItem"
+QT_MOC_LITERAL(9, 89, 10), // "itemdata_t"
+QT_MOC_LITERAL(10, 100, 3), // "opt"
+QT_MOC_LITERAL(11, 104, 6), // "inSync"
+QT_MOC_LITERAL(12, 111, 4), // "load"
+QT_MOC_LITERAL(13, 116, 4) // "save"
 
     },
-    "MyPlc"
+    "MyPlcDevice\0deviceChanged\0\0syncIsDevice\0"
+    "vs_info_t\0rawdev\0syncComplete\0l_rwcmd\0"
+    "updateItem\0itemdata_t\0opt\0inSync\0load\0"
+    "save"
 };
 #undef QT_MOC_LITERAL
 
-static const uint qt_meta_data_MyPlc[] = {
+static const uint qt_meta_data_MyPlcDevice[] = {
 
  // content:
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-       0,    0, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       0,       // signalCount
+       1,       // signalCount
+
+ // signals: name, argc, parameters, tag, flags
+       1,    0,   49,    2, 0x06 /* Public */,
+
+ // slots: name, argc, parameters, tag, flags
+       3,    1,   50,    2, 0x0a /* Public */,
+       6,    1,   53,    2, 0x0a /* Public */,
+       8,    1,   56,    2, 0x0a /* Public */,
+      11,    0,   59,    2, 0x0a /* Public */,
+      12,    0,   60,    2, 0x0a /* Public */,
+      13,    0,   61,    2, 0x0a /* Public */,
+
+ // signals: parameters
+    QMetaType::Void,
+
+ // slots: parameters
+    QMetaType::Bool, 0x80000000 | 4,    5,
+    QMetaType::Void, QMetaType::Bool,    7,
+    QMetaType::Bool, 0x80000000 | 9,   10,
+    QMetaType::Bool,
+    QMetaType::Void,
+    QMetaType::Void,
 
        0        // eod
 };
 
-void MyPlc::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void MyPlcDevice::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
-    Q_UNUSED(_o);
-    Q_UNUSED(_id);
-    Q_UNUSED(_c);
-    Q_UNUSED(_a);
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        auto *_t = static_cast<MyPlcDevice *>(_o);
+        Q_UNUSED(_t)
+        switch (_id) {
+        case 0: _t->deviceChanged(); break;
+        case 1: { bool _r = _t->syncIsDevice((*reinterpret_cast< const vs_info_t(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
+        case 2: _t->syncComplete((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 3: { bool _r = _t->updateItem((*reinterpret_cast< const itemdata_t(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
+        case 4: { bool _r = _t->inSync();
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
+        case 5: _t->load(); break;
+        case 6: _t->save(); break;
+        default: ;
+        }
+    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        switch (_id) {
+        default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+        case 3:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+            case 0:
+                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< itemdata_t >(); break;
+            }
+            break;
+        }
+    } else if (_c == QMetaObject::IndexOfMethod) {
+        int *result = reinterpret_cast<int *>(_a[0]);
+        {
+            using _t = void (MyPlcDevice::*)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&MyPlcDevice::deviceChanged)) {
+                *result = 0;
+                return;
+            }
+        }
+    }
 }
 
-QT_INIT_METAOBJECT const QMetaObject MyPlc::staticMetaObject = { {
-    QMetaObject::SuperData::link<QVariant::staticMetaObject>(),
-    qt_meta_stringdata_MyPlc.data,
-    qt_meta_data_MyPlc,
+QT_INIT_METAOBJECT const QMetaObject MyPlcDevice::staticMetaObject = { {
+    QMetaObject::SuperData::link<QObject::staticMetaObject>(),
+    qt_meta_stringdata_MyPlcDevice.data,
+    qt_meta_data_MyPlcDevice,
     qt_static_metacall,
     nullptr,
     nullptr
 } };
 
 
-const QMetaObject *MyPlc::metaObject() const
+const QMetaObject *MyPlcDevice::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *MyPlc::qt_metacast(const char *_clname)
+void *MyPlcDevice::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
-    if (!strcmp(_clname, qt_meta_stringdata_MyPlc.stringdata0))
+    if (!strcmp(_clname, qt_meta_stringdata_MyPlcDevice.stringdata0))
         return static_cast<void*>(this);
-    return QVariant::qt_metacast(_clname);
+    return QObject::qt_metacast(_clname);
 }
 
-int MyPlc::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int MyPlcDevice::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
-    _id = QVariant::qt_metacall(_c, _id, _a);
+    _id = QObject::qt_metacall(_c, _id, _a);
+    if (_id < 0)
+        return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 7)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 7;
+    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        if (_id < 7)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 7;
+    }
     return _id;
+}
+
+// SIGNAL 0
+void MyPlcDevice::deviceChanged()
+{
+    QMetaObject::activate(this, &staticMetaObject, 0, nullptr);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

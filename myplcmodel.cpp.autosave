@@ -1,173 +1,5 @@
 #include "myplcmodel.h"
 
-MyPlcItem::MyPlcItem(itemtype_t it, MyPlcItem *parent) // const QStringList columheaders)  // Root constructor
-    : m_parent(parent),
-      m_type(it)
-{
- //
-};
-
-
-MyPlcItem::MyPlcItem(module_t mtype, word_t maddr, word_t opt1,word_t opt2, bool ena, MyPlcItem *parent)
-    : m_parent(parent),
-      m_type(itemtype_t::MODULE)
-{
-
-
-    //        m_data.resize(ITEM_NCOLUMNS);
-            m_data[I_ID].setValue(0);
-            m_data[I_TYPE].setValue(m_type);
-            m_data[I_ENAB].setValue(ena);
-             //
-            m_data[IE_IDX].setValue(0);
-            m_data[IE_TYPE].setValue(mtype);
-            m_data[IE_ADDR].setValue(maddr);   // maddr
-            m_data[IE_MOPT1].setValue(opt1);  // option
-            m_data[IE_MOPT2].setValue(opt2);  // option
-
-    switch ( mtype ) {
-       case _NBV30:
-            m_data[I_ALIAS].setValue("Nanoboard v3.0 (USB)");  // Later
-            m_data[IE_NPORT].setValue(8);  // n ports
-           break;
-       case _SEM16:
-            m_data[I_ALIAS].setValue(QString("Sem16 - IO Expander (%1)").arg(maddr));  // Later
-            m_data[IE_NPORT].setValue(16);  // n ports
-           break;
-       case _LCNIF:
-
-            m_data[I_ALIAS].setValue(QString("Loconet-IF %2 (%1)").arg(maddr).arg(opt1?"CTRL":"DECO"));  // Later
-            m_data[IE_NPORT].setValue(8);  // n ports
-
-           break;
-    }  // end-switch
-}
-
-
-
-MyPlcItem::MyPlcItem(const vs_module_t &module, MyPlcItem *parent)
-    : m_parent(parent),
-      m_type(itemtype_t::MODULE)
-{
-    size_t size = sizeof(vs_module_t);
-    m_rawdata = (char*)malloc(size);
-    memcpy(m_rawdata, &module, size);
-
-    switch ((module_t)module.mtype)
-    {
-         case _NBV30:
-             //m_data = new MyPlcNBV30;
-             //m_data->enabled(true);
-             //m_data->id(module.idx);
-            break;
-
-        case _SEM16:
-             //m_data = new MyPlcSEM16;
-             //m_data->enabled(true);
-             //m_data->id(module.idx);
-             //m_data->maddr(module->addr);
-            break;
-
-        case _LCNIF:
-             //m_data = new MyPlcSEM16;
-             //m_data->alias("Loconet-IF");
-            break;
-    }
-
-}
-
-
-
-MyPlcItem::MyPlcItem(const vs_port_t &port, MyPlcItem *parent)
-    : m_parent(parent),
-      m_type(PORT)
-
-{
-    /*
-    m_data.append(port->enabled);
-    m_data.append(QString(port->palias));
-    m_data.append(port->idx);
-    m_data.append(port->ptype);
-    m_data.append((saddr_t)port->subaddr);
-    m_data.append((flag_t)port->io);
-    m_data.append((flag_t)port->defval);
-    //setIcon(0,(port->enabled)?QIcon(":/images/enabled.png"):QIcon(":/images/disabled.png"));
-    */
-}
-
-
-
-MyPlcItem::MyPlcItem(const vs_rule_t &rule, MyPlcItem *parent)
-    : m_type(RULE),
-      m_parent(parent)
-{
-
-}
-
-
-
-
-MyPlcItem *MyPlcItem::child(int number)
- {
-     if (number < 0 || number >= m_childs.size())
-         return nullptr;
-     return m_childs.at(number);
- }
-
-void MyPlcItem::appendChild(MyPlcItem *item)
-{
-    m_childs.append(item);
-}
-
-
-int MyPlcItem::childCount() const
-  {
-      return m_childs.count();
-  }
-
-
-void MyPlcItem::deleteAllChild()
-{
-  qDeleteAll(m_childs);
-}
-
-
-int MyPlcItem::childNumber() const
-{
-      if (m_parent)
-          return m_parent->m_childs.indexOf(const_cast<MyPlcItem*>(this));
-      return 0;
-}
-
-
-int MyPlcItem::columnCount() const
- {
-     return m_data.count();
- }
-
-
-QVariant MyPlcItem::data(int nfield) const
- {
-     if (nfield < 0 || nfield >= m_data.size())
-         return QVariant();
-     return m_data.at(nfield);
- }
-
-
-bool MyPlcItem::setData(int nfield, const QVariant &value)
-  {
-      if (nfield < 0 || nfield >= m_data.size())
-          return false;
-
-      m_data[nfield] = value; // static_cast<QVariant>(
-      return true;
-  }
-
-
-
-
-
-
 
 
 /*********************************************************************************************
@@ -176,21 +8,29 @@ bool MyPlcItem::setData(int nfield, const QVariant &value)
 
 
 
-MyPlcModel::MyPlcModel(QObject *parent)
+MyPlcModel::MyPlcModel( QObject *parent)
     : QAbstractItemModel(parent)
 {
 
+    /*
     QVector<QVariant> rootData;
     rootData.append(QString("Modulo/Porta"));
     rootData.append(QString("[No header]"));
     rootData.append(QString("[No header]"));
+    */
 
-    m_root = new MyPlcItem();
+    itemdata_t dev;
+    dev.type = DEVICE;
+    dev.alias = "unset device";
+    dev.device.hardware = 0;
+    dev.enable = false;
 
-    //emit headerDataChanged(Qt::Horizontal, 0, 2);
+    m_root = new myplcItem(dev);
+
+
     //model->setHeaderData(column, Qt::Horizontal, QVariant("[No header]"), Qt::EditRole);
-    buildItems();
-
+    //emit headerDataChanged(Qt::Horizontal, 0, 2);
+    //buildItems();
 }
 
 
@@ -203,23 +43,50 @@ MyPlcModel::~MyPlcModel()
 
 QVariant MyPlcModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
-        return QVariant();
+    qDebug() << QString("row %1, col%2, role %3").arg(index.row()).arg(index.column()).arg(role);
 
-    if (role != Qt::DisplayRole && role != Qt::EditRole)
-        return QVariant();
+    if (index.isValid())
 
-    MyPlcItem *item = getItem(index);
-    return item->data(index.column());
+    switch (role) {
 
+    case Qt::DisplayRole:
+
+        return (getItem(index)->data(index.column()).toString()  );
+
+    case Qt::EditRole:
+
+        return (getItem(index)->data(index.column()));
+
+    case Qt::FontRole:
+       /* if (row == 0 && col == 0) { //change font only for cell(0,0)
+            QFont boldFont;
+            boldFont.setBold(true);
+            return boldFont;
+        }*/
+        break;
+    case Qt::BackgroundRole:
+      /*  if (row == 1 && col == 2)  //change background only for cell(1,2)
+            return QBrush(Qt::red);
+        break; */
+    case Qt::TextAlignmentRole:
+       /* if (row == 1 && col == 1) //change text alignment only for cell(1,1)
+            return Qt::AlignRight + Qt::AlignVCenter;*/
+        break;
+    case Qt::CheckStateRole:
+   /*     if (row == 1 && col == 0) //add a checkbox to cell(1,0)
+            return Qt::Checked; */
+        break;
+    }
+    return QVariant();
 }
+
 
 bool MyPlcModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (role != Qt::EditRole)
         return false;
 
-    MyPlcItem *item = getItem(index);
+    myplcItem *item = getItem(index);
     bool result = item->setData(index.column(), value);
 
     if (result)
@@ -231,30 +98,38 @@ bool MyPlcModel::setData(const QModelIndex &index, const QVariant &value, int ro
 
 QVariant MyPlcModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-        return m_root->data(section);
+      // if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+      // return m_sections.at(section);
+    if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
+            switch (section) {
+            case 0:
+                return QString("first");
+            case 1:
+                return QString("second");
+            case 2:
+                return QString("third");
+            }
+        }
+        return QVariant();
 
-    return QVariant();
 }
+
 
 bool MyPlcModel::setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role)
 {
     if (role != Qt::EditRole || orientation != Qt::Horizontal)
         return false;
 
-    const bool result = m_root->setData(section, value);
-
-    if (result)
-        emit headerDataChanged(orientation, section, section);
-
-    return result;
+     m_sections.insert(section, value.toString());
+     emit headerDataChanged(orientation, section, section);
+    return true;
 }
 
 
 
 int MyPlcModel::rowCount(const QModelIndex &parent) const
 {
-    const MyPlcItem *parentItem = getItem(parent);
+    const myplcItem *parentItem = getItem(parent);
 
     return parentItem ? parentItem->childCount() : 0;
 }
@@ -262,7 +137,7 @@ int MyPlcModel::rowCount(const QModelIndex &parent) const
 int MyPlcModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return m_root->columnCount();
+    return m_sections.count();
 }
 
 
@@ -270,7 +145,8 @@ Qt::ItemFlags MyPlcModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return Qt::NoItemFlags;
-
+    //Returning Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled is enough to show an editor that a cell can be selected.
+    
     return Qt::ItemIsEditable | QAbstractItemModel::flags(index);
 }
 
@@ -280,11 +156,11 @@ QModelIndex MyPlcModel::index(int row, int column, const QModelIndex &parent) co
      if (parent.isValid() && parent.column() != 0)
          return QModelIndex();
 
-     MyPlcItem *parentItem = getItem(parent);
+     myplcItem *parentItem = getItem(parent);
      if (!parentItem)
          return QModelIndex();
 
-     MyPlcItem *childItem = parentItem->child(row);
+     myplcItem *childItem = parentItem->child(row);
 
      if (childItem)
          return createIndex(row, column, childItem);
@@ -299,9 +175,9 @@ QModelIndex MyPlcModel::parent(const QModelIndex &index) const
     if (!index.isValid())
         return QModelIndex();
 
-    MyPlcItem *childItem = getItem(index);
+    myplcItem *childItem = getItem(index);
 
-    MyPlcItem *parentItem = childItem ? childItem->parent() : nullptr;
+    myplcItem *parentItem = childItem ? childItem->parent() : nullptr;
 
     if (parentItem == m_root || !parentItem)
         return QModelIndex();
@@ -312,10 +188,10 @@ QModelIndex MyPlcModel::parent(const QModelIndex &index) const
 
 
 
-MyPlcItem *MyPlcModel::getItem(const QModelIndex &index) const
+myplcItem *MyPlcModel::getItem(const QModelIndex &index) const
 {
     if (index.isValid()) {
-        MyPlcItem *item = static_cast<MyPlcItem*>(index.internalPointer());
+        myplcItem *item = static_cast<myplcItem*>(index.internalPointer());
         if (item)
             return item;
     }
@@ -340,6 +216,48 @@ void MyPlcModel::buildItems()
 
 
 
+bool MyPlcModel::syncItem(const itemdata_t &opt)
+{
+    myplcItem *item = new myplcItem(opt);
+    switch ( opt.type ) {
+
+       case DEVICE:
+              // Single device !
+              m_root->setData(opt);
+              //we identify the top left cell
+              //QModelIndex topLeft = createIndex(0,0);
+              //emit a signal to make the view reread identified data
+              //emit dataChanged(topLeft, topLeft, {Qt::DisplayRole});
+            break;
+
+       case MODULE:
+              // Search module
+                // No found ? Add module
+                // InsertRow()
+              m_root->appendChild(item);
+              return (true);
+
+       case PORT:
+             // Search module same idx
+               // No found ? Error
+              m_root->child(opt.port.imod)->appendChild(item);
+              return (true);
+
+       case RULE:
+              m_rules->appendChild(item);
+              return (true);
+
+            break;
+
+    }  // end-switch
+    return (false);
+}
+
+
+
+
+
+/*
 void MyPlcModel::setDeviceInfo(const vs_info_t &info)
 {
 
@@ -395,24 +313,6 @@ bool MyPlcModel::setRule(vs_rule_t &rule )
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Use delegate
 
 
@@ -447,21 +347,14 @@ bool Item::removeChildren(int position, int count)
 
 
 
-int MyPlcItem::row() const
-{
-    if (m_parent)
-        return m_parent->m_childs.indexOf(const_cast<MyPlcItem*>(this));
-    return 0;
-}
 
-
-
+/*
 
 bool MyPlcModel::loadData(QDataStream *in)
 {
     //QDataStream stream(device);
     int rowCount, columnCount;
-    /*stream >> rowCount;
+   stream >> rowCount;
     stream >> columnCount;
 
     for(int row = 0; row < rowCount; row++)
@@ -469,14 +362,14 @@ bool MyPlcModel::loadData(QDataStream *in)
             QString item;
             stream >> item;
           //  model->setItem(row, column, item);
-        }  */
+        }
     return (true);
 }
 
 bool MyPlcModel::saveData(QDataStream *out)
 {
    // QDataStream stream(device);
- /*   int rowCount =   rowCount(); // model->rowCount();
+   int rowCount =   rowCount(); // model->rowCount();
     int columnCount = model->columnCount();
     stream << rowCount;
     stream << columnCount;
@@ -484,11 +377,11 @@ bool MyPlcModel::saveData(QDataStream *out)
     for(int row = 0; row < rowCount; row++)
         for(int column = 0; column < columnCount; column++) {
             stream << model->item(row, column)->text();
-        } */
+        }
       return (true);
 }
 
-
+*/
 
 
 

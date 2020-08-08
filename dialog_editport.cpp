@@ -1,9 +1,11 @@
 #include "dialog_editport.h"
 #include "ui_dialog_editport.h"
 
-DialogEditPort::DialogEditPort(QWidget *parent) :
+
+
+Dialog_EditPort::Dialog_EditPort(dmModules model, QModelIndex index, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::DialogEditPort)
+    ui(new Ui::Dialog_EditPort)
 {
     ui->setupUi(this);
     //connect(ui->buttonBox->button(QDialogButtonBox::Ok), SIGNAL( clicked() ), SLOT(on_ok_clicked())  );
@@ -13,14 +15,14 @@ DialogEditPort::DialogEditPort(QWidget *parent) :
 
 
 
-DialogEditPort::~DialogEditPort()
+Dialog_EditPort::~Dialog_EditPort()
 {
     delete ui;
 
 
 }
 
-void DialogEditPort::setData(vs_module_t *module, const QModelIndex &index)
+void Dialog_EditPort::setData(vs_module_t *module, const QModelIndex &index)
 {
   m_index = &index;
   m_module = module;
@@ -36,13 +38,13 @@ void DialogEditPort::setData(vs_module_t *module, const QModelIndex &index)
 
 }
 
-void DialogEditPort::on_buttonBox_clicked(QAbstractButton *button)
+void Dialog_EditPort::on_buttonBox_clicked(QAbstractButton *button)
 {
   // ok
 }
 
 
-void DialogEditPort::on_buttonBox_accepted()
+void Dialog_EditPort::on_buttonBox_accepted()
 {
     /*
     m_module->ports[m_index->row()].enabled =  (ui->ckEnabled->isChecked())?ON:OFF;

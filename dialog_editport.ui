@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DialogEditPort</class>
- <widget class="QDialog" name="DialogEditPort">
+ <class>Dialog_EditPort</class>
+ <widget class="QDialog" name="Dialog_EditPort">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -35,7 +35,7 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QLabel" name="lbModuleAlias">
+  <widget class="QLabel" name="lbModule">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -54,45 +54,6 @@
     <string>Nanoboard V3</string>
    </property>
   </widget>
-  <widget class="QGroupBox" name="groupBox">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>100</y>
-     <width>101</width>
-     <height>80</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Circuito</string>
-   </property>
-   <widget class="QRadioButton" name="rbSns">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>71</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Sensor</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="rbAct">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>40</y>
-      <width>71</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Actuator</string>
-    </property>
-   </widget>
-  </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
@@ -103,25 +64,25 @@
     </rect>
    </property>
    <property name="text">
-    <string>Descrizione Porta / Circuito</string>
+    <string>Alias porta</string>
    </property>
   </widget>
   <widget class="QGroupBox" name="groupBox_3">
    <property name="geometry">
     <rect>
-     <x>250</x>
-     <y>100</y>
-     <width>101</width>
-     <height>80</height>
+     <x>280</x>
+     <y>140</y>
+     <width>71</width>
+     <height>71</height>
     </rect>
    </property>
    <property name="title">
-    <string>Condizione iniziale</string>
+    <string>Stato iniziale</string>
    </property>
-   <widget class="QRadioButton" name="rbDefOn">
+   <widget class="QRadioButton" name="defOn">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>20</y>
       <width>51</width>
       <height>17</height>
@@ -131,10 +92,10 @@
      <string>On</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="rbDefOff">
+   <widget class="QRadioButton" name="defOff">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>40</y>
       <width>51</width>
       <height>17</height>
@@ -187,8 +148,8 @@
   <widget class="QCheckBox" name="ckEnabled">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>50</y>
+     <x>280</x>
+     <y>20</y>
      <width>61</width>
      <height>17</height>
     </rect>
@@ -202,41 +163,119 @@
     <rect>
      <x>10</x>
      <y>100</y>
-     <width>101</width>
-     <height>80</height>
+     <width>261</width>
+     <height>111</height>
     </rect>
    </property>
    <property name="title">
-    <string>Direzione</string>
+    <string>Tipo porta</string>
    </property>
-   <widget class="QRadioButton" name="rbIn">
+   <widget class="QRadioButton" name="tpT3">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>61</width>
+      <x>10</x>
+      <y>60</y>
+      <width>111</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>Input</string>
+     <string>Pulsante (0/1/0)</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="rbOut">
+   <widget class="QRadioButton" name="tpT2">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>40</y>
-      <width>61</width>
+      <width>121</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>Output</string>
+     <string>Interruttore (1/0)</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="tpT1">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>121</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Interruttore (0/1)</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="tpT4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>111</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pulsante (1/0/1)</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="tpT7">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>60</y>
+      <width>131</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Uscita (impulso 0/1/0)</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="tpT5">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>20</y>
+      <width>141</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Uscita (bi-stato 0/1)</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="tpT8">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>80</y>
+      <width>131</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Uscita (impulso 1/0/1)</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="tpT6">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>40</y>
+      <width>131</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Uscita (bi-stato 1/0)</string>
     </property>
    </widget>
   </widget>
-  <widget class="QLabel" name="lbModulePort">
+  <widget class="QLabel" name="lbPaddr">
    <property name="geometry">
     <rect>
      <x>170</x>
@@ -259,9 +298,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>210</y>
+     <y>240</y>
      <width>341</width>
-     <height>121</height>
+     <height>91</height>
     </rect>
    </property>
   </widget>
@@ -269,7 +308,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>190</y>
+     <y>220</y>
      <width>211</width>
      <height>16</height>
     </rect>
@@ -284,7 +323,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>DialogEditPort</receiver>
+   <receiver>Dialog_EditPort</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -300,7 +339,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>DialogEditPort</receiver>
+   <receiver>Dialog_EditPort</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

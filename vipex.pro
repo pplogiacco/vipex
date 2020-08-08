@@ -1,20 +1,20 @@
 HEADERS       = mainwindow.h \
-    dialog_addmodule.h \
-    dialog_editmodule.h \
-    dialog_editport.h \
-    dialog_editrule.h \
-    dialog_serial.h \
-    myplc.h \
-    myplcmodel.h
+                dialog_editmodule.h \
+                dialog_editport.h \
+                dialog_editrule.h \
+                dialog_serialsync.h \
+                myplc.h \
+                myplcmodels.h
+
+
 SOURCES       = main.cpp \
-                dialog_addmodule.cpp \
                 dialog_editmodule.cpp \
                 dialog_editport.cpp \
                 dialog_editrule.cpp \
-                dialog_serial.cpp \
+                dialog_serialsync.cpp \
                 mainwindow.cpp \
                 myplc.cpp \
-                myplcmodel.cpp
+                myplcmodels.cpp
 QT           += widgets serialport
 requires(qtConfig(filedialog))
 
@@ -25,11 +25,11 @@ target.path = C:\GD\RMS\software\vipex
 INSTALLS += target
 
 FORMS += \
-    dialog_addmodule.ui \
     dialog_editmodule.ui \
     dialog_editport.ui \
     dialog_editrule.ui \
-    dialog_serial.ui \
+    dialog_serialsync-popup.ui \
+    dialog_serialsync.ui \
     mainwindow.ui
 
 RESOURCES += \

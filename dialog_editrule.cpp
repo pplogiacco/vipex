@@ -1,14 +1,14 @@
 #include "dialog_editrule.h"
-#include "ui_dialogeditrule.h"
+#include "ui_dialog_editrule.h"
 
-DialogEditRule::DialogEditRule(QWidget *parent) :
+Dialog_EditRule::Dialog_EditRule(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::DialogEditRule)
+    ui(new Ui::Dialog_EditRule)
 {
     ui->setupUi(this);
 }
 
-DialogEditRule::~DialogEditRule()
+Dialog_EditRule::~Dialog_EditRule()
 {
     delete ui;
 }

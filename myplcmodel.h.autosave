@@ -15,47 +15,50 @@
 #include "qmetatype.h"
 
 
+#define ITEM_NCOLUMNS   14
 
-
-
-#define ITEM_NCOLUMNS   12
-
-                            // ITEM DATA:
-#define I_SYNC          0       // uC Syncronized
-#define I_TYPE          1       // Element type
+                            // META DATA:
+#define I_TYPE          0       // Element type
+#define I_ALIAS         1       // Text alias
 #define I_ENAB          2       // Enable/Disable item
-#define I_ALIAS         3       // Text alias
+#define I_SYNC          3       // uC Syncronized
+                                //
 
                             // Element's Coulumns defs:
-#define IE_IDX          4       // uC index
+#define IE_IDX          4   // uC index
+
+                            // Module & Ports
 #define IE_TYPE         5       // Module/port type
 #define IE_ADDR         6       // maddr/saddr
 
-                            // Module
+                                // Module:
 #define IE_NPORT        7       // number of ports
 #define IE_MOPT1        8       // Hw option1
 #define IE_MOPT2        9       // Hw option2
 
-                            // Port
+                                // Port:
 #define IE_IO           7       // port I/O
 #define IE_DVAL         8       // port default value
 #define IE_MIDX         9       // port module idx ref
 
                             // Rule
-#define IE_RLC          7      // Rule condition/action
-#define IE_IPE          8      // Rule Idx Port to evaluate    (PIn)
-#define IE_IPA          9      // Rule Idx Port to act/change  (POut)
+#define IE_RLC          5      // Rule condition/action
+#define IE_IPE          6      // Rule Idx Port to evaluate    (PIn)
+#define IE_IPA          7      // Rule Idx Port to act/change  (POut)
 
                             // DEVICE DATA
 #define ID_SERIAL       4
-#define ID_SOFTWARE     5
+#define ID_FIRMWARE     5
 #define ID_HARDWARE     6
 #define ID_CYCLE        7
 #define ID_MEMORY       8
 #define ID_EEPROM       9
 #define ID_MODULES      10
-#define ID_PORTS        11
-#define ID_RULES        12
+#define ID_INPORTS      11
+#define ID_OUTPORTS     12
+#define ID_RULES        13
+#define ID_PORTS        14
+
 
 
 
@@ -68,95 +71,13 @@
 
 
 
-typedef enum {
-        DEVICE, // Root
-        MODULE,
-        PORT,
-        RULE
-             } itemtype_t;
-
-typedef struct {
-  itemtype_t type;          // rule condition coding
-     QString alias;
-        bool enable;        // index innput port
-        bool sync;
-
-        union {
-            vs_module_t module;
-              vs_port_t port;
-              vs_rule_t rule;
-              };
-               } itemdata_t;
-
-
-Q_DECLARE_METATYPE(itemdata_t);
 
 
 
 
-
-
-
-class MyPlcItem
+class MyPlcModel : public QAbstractItemModel
 {
-public:
-    explicit MyPlcItem();  // Root const QStringList columheaders);
-    explicit MyPlcItem(itemtype_t it, MyPlcItem *parent = nullptr);
-
-    explicit MyPlcItem(const vs_module_t &data, MyPlcItem *parent = nullptr);
-    explicit MyPlcItem(module_t mtype, word_t maddr=0, word_t opt1=0,word_t opt2=0, bool ena = false, MyPlcItem *parent = nullptr);
-
-    explicit MyPlcItem(const vs_port_t &data, MyPlcItem *parent = nullptr);
-    explicit MyPlcItem(const vs_rule_t &data, MyPlcItem *parent = nullptr);
-
-    ~MyPlcItem()
-    {
-      free(m_rawdata);
-      qDeleteAll(m_childs);
-
-    }
-
-
-    // generic Data Model
-    void appendChild(MyPlcItem *child);
-    MyPlcItem *child(int row);
-    void deleteAllChild();
-
-    int row() const;           // Model row number
-    int childCount() const;
-    int childNumber() const;   // Number of child in parent vector
-
-    int columnCount() const;   // Number of field column
-
-    inline MyPlcItem *parent() { return (m_parent); }
-
-    QVariant data(int nfield) const;
-    bool setData(int nfield, const QVariant &value);
-
-    // specific MyPlc
-    inline itemtype_t itemType() { return (m_type); }
-
-
-private:
-    MyPlcItem *m_parent;
-    QVector<MyPlcItem*> m_childs;
-
-    itemtype_t m_type;
-    char *m_rawdata;
-
-    itemdata_t m_data;
-    //MyPlcAbstractItemData *m_data = nullptr;
-
-};
-
-
-
-
-
-
-class MyPlcModel    : public QAbstractItemModel
-{
-      Q_OBJECT
+  //    Q_OBJECT
 
 public slots:
     void buildItems();
@@ -169,23 +90,31 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
-    bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role = Qt::EditRole) override;
+
+    QVariant headerData(int section, Qt::Orientation orientation,
+                        int role = Qt::DisplayRole) const override;
+
+    bool setHeaderData(int section, Qt::Orientation orientation,        // Da implementare se cambia colonne dinamicamente
+                       const QVariant &value, int role = Qt::EditRole) override;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     Qt::ItemFlags flags(const QModelIndex &index) const override;
+
     QModelIndex index(int row, int column,const QModelIndex &parent = QModelIndex()) const override;
+
     QModelIndex parent(const QModelIndex &index = QModelIndex()) const override;
 
     // Implements MyPlc
 
+    bool syncItem(const itemdata_t &opt);
+
     // ! void deleteAllItems();
-    //
+    /*
     void setDeviceInfo(const vs_info_t &info);
     void getDeviceInfo(vs_info_t *info);
-    inline MyPlcItem *rootDevice() { return (m_root); }
+    inline modelItem *rootDevice() { return (m_root); }
 
     bool setModule(const vs_module_t &module);
     bool setPort(vs_port_t &port);
@@ -193,16 +122,28 @@ public:
 
     bool loadData(QDataStream *out);    // Files
     bool saveData(QDataStream *in);
+    */
 
 private:
-    MyPlcItem *getItem(const QModelIndex &index) const;
-    MyPlcItem *m_root = new MyPlcItem(DEVICE);
-    vs_info_t m_info;
+    myplcItem *getItem(const QModelIndex &index) const;
+    myplcItem *m_root = new myplcItem();
+    myplcItem *m_rules = new myplcItem();
+    QVector<QString> m_sections;
+
+
 };
 
 
 
 #endif // MYPLCMODEL_H
+
+
+
+
+
+
+
+
 
 
 

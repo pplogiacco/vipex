@@ -21,25 +21,25 @@
 QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
-struct qt_meta_stringdata_DialogEditRule_t {
+struct qt_meta_stringdata_Dialog_EditRule_t {
     QByteArrayData data[1];
-    char stringdata0[15];
+    char stringdata0[16];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_DialogEditRule_t, stringdata0) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_Dialog_EditRule_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
-static const qt_meta_stringdata_DialogEditRule_t qt_meta_stringdata_DialogEditRule = {
+static const qt_meta_stringdata_Dialog_EditRule_t qt_meta_stringdata_Dialog_EditRule = {
     {
-QT_MOC_LITERAL(0, 0, 14) // "DialogEditRule"
+QT_MOC_LITERAL(0, 0, 15) // "Dialog_EditRule"
 
     },
-    "DialogEditRule"
+    "Dialog_EditRule"
 };
 #undef QT_MOC_LITERAL
 
-static const uint qt_meta_data_DialogEditRule[] = {
+static const uint qt_meta_data_Dialog_EditRule[] = {
 
  // content:
        8,       // revision
@@ -55,7 +55,7 @@ static const uint qt_meta_data_DialogEditRule[] = {
        0        // eod
 };
 
-void DialogEditRule::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void Dialog_EditRule::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     Q_UNUSED(_o);
     Q_UNUSED(_id);
@@ -63,30 +63,30 @@ void DialogEditRule::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
     Q_UNUSED(_a);
 }
 
-QT_INIT_METAOBJECT const QMetaObject DialogEditRule::staticMetaObject = { {
+QT_INIT_METAOBJECT const QMetaObject Dialog_EditRule::staticMetaObject = { {
     QMetaObject::SuperData::link<QDialog::staticMetaObject>(),
-    qt_meta_stringdata_DialogEditRule.data,
-    qt_meta_data_DialogEditRule,
+    qt_meta_stringdata_Dialog_EditRule.data,
+    qt_meta_data_Dialog_EditRule,
     qt_static_metacall,
     nullptr,
     nullptr
 } };
 
 
-const QMetaObject *DialogEditRule::metaObject() const
+const QMetaObject *Dialog_EditRule::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *DialogEditRule::qt_metacast(const char *_clname)
+void *Dialog_EditRule::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
-    if (!strcmp(_clname, qt_meta_stringdata_DialogEditRule.stringdata0))
+    if (!strcmp(_clname, qt_meta_stringdata_Dialog_EditRule.stringdata0))
         return static_cast<void*>(this);
     return QDialog::qt_metacast(_clname);
 }
 
-int DialogEditRule::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int Dialog_EditRule::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = QDialog::qt_metacall(_c, _id, _a);
     return _id;

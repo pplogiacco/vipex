@@ -54,16 +54,19 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "dialog_addmodule.h"
-#include "dialog_editport.h"
 #include "dialog_editmodule.h"
-#include "dialog_serial.h"
+#include "dialog_editport.h"
+#include "dialog_deleteeditmodule.h"
+#include "dialog_serialsync.h"
+
+#include <QSerialPortInfo>
+
 
 MainWindow::MainWindow(QWidget *parent)  :
             QMainWindow(parent),
             m_ui(new Ui::MainWindow),
-            m_status(new QLabel),
-            m_myplc(new MyPlcModel())
+            m_status(new QLabel)
+
 {
 
     // General
@@ -73,6 +76,20 @@ MainWindow::MainWindow(QWidget *parent)  :
     const QSize availableSize = screen()->availableGeometry().size();
     resize(availableSize.width() / 2, availableSize.height() / 2);
 
+    // Serial
+
+    cbxSerialPort_refresh();
+    m_ui->mainToolBar->insertWidget(m_ui->actionRetrieve, &cbxSerialPort);
+
+    //m_ui->actionRewrite->setEnabled(false);
+    QWidget* empty = new QLabel("  ");
+    //empty->setSizePolicy(QSizePolicy::Fixed);
+    m_ui->mainToolBar->insertWidget(m_ui->actionRetrieve,empty);
+    //m_ui->actionRetrieve->setEnabled(false);
+
+   // connect(l_serial, &QSerialPort::errorOccurred, this, &MainWindow::serialError);
+   // connect(l_serial, &QSerialPort::readyRead, this, &MainWindow::serialOnReceived);
+
     m_ui->statusbar->addWidget(m_status);
     statusBar()->showMessage(tr("Ready"));
 
@@ -80,14 +97,25 @@ MainWindow::MainWindow(QWidget *parent)  :
     //  m_ui->myplcTree->setMyPlc(m_myplc);  // Set working data
     //  m_ui->myplcTree->Inizialize();
     // m_ui->myplcTree->reloadItems();          // create Items
+    //MyPlcModel *model = new MyPlcModel(l_myplc);
 
-    MyPlcModel *model = new MyPlcModel(m_myplc);
-    m_ui->View->setModel(model);
+ //   dmRules *dm_rules = new dmRules(); // su dati l_myplc1
+ //   m_ui->viewRules->setModel(dm_rules);
+
+
+    l_myplc = new MyPlcDevice(tr("MyPlc"));
+
+    dm_modules = new dmModules(l_myplc);     // l_myplc DATAMODEL
+    m_ui->viewModules->setModel(dm_modules);
+
+    dmRules *dm_rules = new dmRules(l_myplc);     // l_myplc DATAMODEL
+    m_ui->viewRules->setModel(dm_rules);
+
+    //m_ui->viewModules->update();
+    //connect(l_myplc, deviceChanged,this,SLOT(dm_modules->test()) );
 
     //delegate = QtGui.QStyledItemDelegate()
     //tree.setItemDelegate(delegate)
-
-
 
 
     // Generic
@@ -100,19 +128,19 @@ MainWindow::MainWindow(QWidget *parent)  :
     connect(m_ui->actionFileSaveAs, &QAction::triggered, this, &MainWindow::fileSaveAs);
 
     // MyPlc
-    connect(m_ui->actionAddModule, &QAction::triggered, this, &MainWindow::addModule);
-    connect(m_ui->actionSerialConnect, &QAction::triggered, this, &MainWindow::serialLink);
+    // connect(m_ui->actionAddModule, &QAction::triggered, this, &MainWindow::addModule);
+    //connect(m_ui->actionSerialConnect, &QAction::triggered, this, &MainWindow::serialSync);
     //connect(m_ui->actionClean, &QAction::triggered, this, &MainWindow::myplcClean);
 
 
-    // MyPlcTree
-    // m_ui->myplcTree->setContextMenuPolicy(Qt::CustomContextMenu);  // Qt::ActionsContextMenu
-    // connect(m_ui->myplcTree, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
+    // viewModules
+    m_ui->viewModules->setContextMenuPolicy(Qt::CustomContextMenu);  // Qt::ActionsContextMenu
+    connect(m_ui->viewModules, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(viewModulesContextMenu(const QPoint &)));
+
     // m_ui->View->setContextMenuPolicy(Qt::CustomContextMenu);
     // connect(m_ui->View, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
 
 }
-
 
 
 MainWindow::~MainWindow()
@@ -135,6 +163,62 @@ void MainWindow::about()
 }
 
 
+void MainWindow::refresh()
+{
+
+      //  m_ui->viewModules->update(new QModelIndex());
+      m_ui->viewModules->update();
+      deviceInfos_refresh();
+
+}
+
+
+
+// ***************************************************************************************
+//                                                                     S E R I A L S Y N C
+// ***************************************************************************************
+
+
+void MainWindow::cbxSerialPort_refresh()
+{
+    cbxSerialPort.clear();
+    const auto infos = QSerialPortInfo::availablePorts();
+    for (const QSerialPortInfo &info : infos)
+        cbxSerialPort.addItem(info.portName());
+}
+
+
+void MainWindow::deviceInfos_refresh()
+{
+    itemdata_t dev = l_myplc->getDeviceItems()->getItemData();
+    switch (dev.device.hardware) {
+           case HW_NBV30:      // uC -> PC
+                m_ui->lb_hardware->setText("NBv30");
+                break;
+    }
+    m_ui->lb_firmware->setText(QStringLiteral("%1.%1").arg(_ByteVer(dev.device.firmware))
+                                                    .arg(_ByteRel(dev.device.firmware)));
+    m_ui->lb_serial->setNum(dev.device.serial);
+    m_ui->lb_memory->setNum(dev.device.memory*1024);
+    m_ui->lb_eprom->setNum(dev.device.eprom*1024);
+    m_ui->lb_cycle->setNum(dev.device.cycle<<1 );
+    m_ui->lb_modules->setNum(dev.device.modules );
+    m_ui->lb_total->setNum(dev.device.p_in+dev.device.p_out);
+    m_ui->lb_pin->setNum(dev.device.p_in );
+    m_ui->lb_pout->setNum(dev.device.p_out );
+    m_ui->lb_rules->setNum(dev.device.rules );
+}
+
+
+void MainWindow::on_actionRetrieve_triggered(bool checked)
+{
+    Dialog_SerialSync syncdiag(l_myplc,cbxSerialPort.currentText(),false);
+    //connect(&syncdiag, SIGNAL(syncronized()), this, SLOT(refresh()));
+    syncdiag.exec();
+    refresh();
+
+}
+
 // ***************************************************************************************
 //                                                                                 F I L E
 // ***************************************************************************************
@@ -142,15 +226,15 @@ void MainWindow::about()
 //
 void MainWindow::fileOpen()
 {
-    m_filename = QFileDialog::getOpenFileName(this, tr("Apri file"),
+    l_filename = QFileDialog::getOpenFileName(this, tr("Apri file"),
                                                     QDir::currentPath(), tr("MyPlc Files (*.plc)"));
-    if (m_filename.isEmpty()) return;
+    if (l_filename.isEmpty()) return;
 
-    QFile file(m_filename);
+    QFile file(l_filename);
 
     if (!file.open(QFile::ReadOnly)) {
         QMessageBox::warning(this, tr("Apri file"),
-                                   tr("Impossibile leggere %1:\n%2.").arg(QDir::toNativeSeparators(m_filename),
+                                   tr("Impossibile leggere %1:\n%2.").arg(QDir::toNativeSeparators(l_filename),
                                    file.errorString()));
         return;
     }
@@ -166,7 +250,7 @@ void MainWindow::fileOpen()
     if (magic != 0xA0B0C0D0) {
                              QMessageBox::warning(this, tr("Apri file"),
                              tr("Versione file non compatibile %1:\n%2.")
-                             .arg(QDir::toNativeSeparators(m_filename),
+                             .arg(QDir::toNativeSeparators(l_filename),
                                   file.errorString()));
         return; // XXX_BAD_FILE_FORMAT;
      }
@@ -187,20 +271,19 @@ void MainWindow::fileOpen()
     //*cbuf = (char*)malloc(nbyte);
     //*in.readBytes(cbuf,nbyte);
     //* m_myplc->setMyPlc((v_device_t*)cbuf);
-    m_myplc->loadData(&in);
+    // m_myplc->loadData(&in);
     //*free(cbuf);
     //*refreshTree();  // Aggiorna interfaccia
 
     statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
-
 void MainWindow::save()
 {
-    QFile file(m_filename);
+    QFile file(l_filename);
     if (!file.open(QFile::WriteOnly)) {
         QMessageBox::warning(this, tr("Salva file"), tr("Impossibile salvare il file %1:\n%2.")
-                                  .arg(QDir::toNativeSeparators(m_filename), file.errorString()));
+                                  .arg(QDir::toNativeSeparators(l_filename), file.errorString()));
     return;
     }
 
@@ -217,55 +300,39 @@ void MainWindow::save()
     //*memcpy(&(cbuf[0]), m_myplc->getMyPlc(), nbyte);
     //*out.writeBytes(cbuf,nbyte);
     //*free(cbuf);
-    m_myplc->saveData(&out);
+    // !!! m_myplc->saveData(&out);
     statusBar()->showMessage(tr("File saved"), 2000);
 };
 
 void MainWindow::fileSave()
 {
-    if ( this->m_filename.isEmpty() ) {
+    if ( this->l_filename.isEmpty() ) {
         fileSaveAs();
      } else save();
 }
 
 void MainWindow::fileSaveAs()
 {
-    this->m_filename = QFileDialog::getSaveFileName(this, tr("Salva file con nome"),
+    this->l_filename = QFileDialog::getSaveFileName(this, tr("Salva file con nome"),
                                                     QDir::currentPath(),
                                                     tr("MyPlc Files (*.plc)"));
     save();
  }
 
 
-
 // ***************************************************************************************
-//                                                                             S E R I A L
-// ***************************************************************************************
-
-
-void MainWindow::serialLink()
-{
-    DialogSerial dia(m_myplc);
-    connect(&dia, SIGNAL(myplcChanged()), this, SLOT(refreshTree()));
-    dia.exec();
-
-}
-
-
-
-
-// ***************************************************************************************
-//                                                                       M Y P L C T R E E
+//                                                            M O D E L S    E D I T I N G
 // ***************************************************************************************
 
 
-void MainWindow::onCustomContextMenu(const QPoint &punto)
+void MainWindow::viewModulesContextMenu(const QPoint &punto)
 {
     //QActionGroup *alignmentGroup;
     QAction *edit;     // Port/Module
     edit = new QAction(tr("&Modifica"), this);
     edit->setShortcuts(QKeySequence::New);
     edit->setStatusTip(tr("Modifica elemento"));
+
     QAction *enable;   // enable/disable
     enable = new QAction(tr("&Abilita/Disabilita"), this);
     enable->setShortcuts(QKeySequence::New);
@@ -287,61 +354,51 @@ void MainWindow::onCustomContextMenu(const QPoint &punto)
 
 }
 
-
 void MainWindow::myplcClean()
 {
    //m_myplc->deleteAllItems();
-   refreshTree();
+   // refreshTree();
 }
-
-void MainWindow::addModule()
-{
-   DialogAddModule dia(m_myplc);
-   connect(&dia, SIGNAL(myplcChanged()), this, SLOT(refreshTree()));
-   dia.exec();
-}
-
-
 
 
 
 void MainWindow::editItem()
 {
-    DialogEditPort dia;
-    dia.exec();
+                    //  dm_modules,
+
+
 }
 
 
-
-void MainWindow::on_myplcTree_itemDoubleClicked(QTreeWidgetItem *item, int column)
+void MainWindow::on_actionSerialConnect_triggered(bool checked)
 {
-}
+    QProcess process;
+    process.start("C:\Program Files (x86)\Arduino\arduino.exe", QStringList() << "-V");
 
-
-void MainWindow::refreshTree()
-{
-        /*m_ui->treeView->reloadItems();
-
-       //  vs_info_t * info = m_myplc->getInfo();
-        m_ui->lb_hardware->setNum( info->hardware );
-        m_ui->lb_firmware->setText(QStringLiteral("%1.%1").arg(info->firmware>>5).arg(info->firmware & 0x1F));
-        m_ui->lb_memory->setNum( info->memory );
-        m_ui->lb_cycle->setNum( info->cycle );
-        m_ui->lb_modules->setNum( info->modules );
-        m_ui->lb_pin->setNum( info->p_in );
-        m_ui->lb_pout->setNum( info->p_out );
-        m_ui->lb_rules->setNum( info->rules );
+        /*
+        proc.start(command, arguments);
+        if(proc.waitForStarted())
+        {
+        qDebug() << "Starting";
+        }
+        proc.waitForFinished(-1);
+        qDebug() << "finish";@
         */
 }
 
 
+void MainWindow::on_actionAddModule_triggered(bool checked)
+{
+    Dialog_EditModule diag(dm_modules);
+    //connect(&syncdiag, SIGNAL(syncronized()), this, SLOT(refresh()));
+    diag.exec();
+    refresh();
+}
 
-
-
-
-void MainWindow::on_myplcTree_doubleClicked(const QModelIndex &index)
+void MainWindow::on_viewModules_doubleClicked(const QModelIndex &index)
 {
 
-
+    Dialog_EditPort dialog(dm_modules, m_ui->viewModules->currentIndex() );
+    dialog.exec();
 
 }
